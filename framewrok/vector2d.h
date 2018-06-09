@@ -2,7 +2,7 @@
 
 #include <iostream>
 
-#define MEX_VEC_DIR_NUM (5)
+#define MAX_VEC_DIR_NUM (5)
 
 enum
 {
@@ -14,7 +14,7 @@ enum
 	LOCAL,
 	D_BUTT
 		
-}
+};
 
 
 #define VECTOR_UP (Vector2D (0, -1))
@@ -34,9 +34,9 @@ struct Vector2D
 	// Sets col and row to zero
 	void Zero(){col=0, row=0;}
 	void Set(int _col, int _row) {col=_col; row=_row;}
-	bool isZero() const{return col == 0 && row == 0}
+	bool isZero() const{return col == 0 && row == 0;}
 	
-	inline int LengtheSq() const;
+	inline int LengthSq() const;
 	
 	inline bool isPerp(Vector2D &vec);
 	
@@ -78,7 +78,7 @@ struct Vector2D
 			return (col == rhs.col) &&(row = rhs.row);
 	}
 	
-	bool perator != (const Vector2D&rhs) const
+	bool operator != (const Vector2D&rhs) const
 	{
 		return (col != rhs.col) || (row != rhs.row);
 	}
@@ -94,10 +94,10 @@ struct Vector2D
 		return row < rhs.row;
 	}
 	
-	friend ostreasm & operator << (ostream & ouput, const Vector2D &a);	
-}
+	friend ostream & operator << (ostream & ouput, const Vector2D &a);
+};
 
-inline ostream & operator << (ostream & output , const Vector2D& a)
+inline ostream& operator << (ostream & output , const Vector2D& a)
 {
 	output << "(" << a.col <<", " << a.row << ")" << endl;
 	return output;
@@ -144,7 +144,7 @@ inline Vector2D operator*(const Vector2D *lhs, int rhs);
 inline Vector2D operator*(int lhs, const Vector2D &rhs);
 inline Vector2D operator-(const Vector2D &lhs, const Vector2D&rhs);
 inline Vector2D operator+(const Vector2D&lhs, const Vector2D &rhs);
-inline Vector2D operator/(const Vector2D &lhs, int rhs)
+inline Vector2D operator/(const Vector2D &lhs, int rhs);
 
 inline Vector2D operator*(const Vector2D *lhs, int rhs)
 {

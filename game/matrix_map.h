@@ -75,10 +75,10 @@ class MatrixMap
 	int index2col(int id){return id % _width;}
 	int index2row(int id) {return id / _width;}
 	Vector2D index2Pos(int id) {return Vector2D(index2col(id), index2row(id));}
-	void ClearVolatileTerrain();
+	void clearVolatileTerrain();
 	void clearVolatileTerrain(E_CELL type);
 	void clearDeleteTerrain();
-	void clone(MattrixMap & newMap);
+	void clone(MatrixMap & newMap);
 	
 	int getNearestTerrainDistance(Vector2D &pos, Vector2D &dir, E_CELL type);
 	int getTerrainNumInVision(Vector2D &ops, Vector2D &dir, E_CELL type);
@@ -196,4 +196,4 @@ class MatrixMap
 	bool Save(const char * FileName);
 	bool Save (std::ofstream & stream);
 
-}
+};

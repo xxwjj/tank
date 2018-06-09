@@ -54,17 +54,17 @@ class Action {
 };
 
 
-typedef std::vector<Action>::iterator ActionVecIt
+typedef std::vector<Action>::iterator ActionVecIt;
 
 
-class ActionVec:pulic std::vector<Action>  
+class ActionVec:public std::vector<Action>
 {
 	public:
 		void DisableAction(ActionVecIt action)
 		{
 			if (!action->disable)
 				{
-				DISABLE_ACTION(action)
+				DISABLE_ACTION(action);
 			}
 			
 		}
