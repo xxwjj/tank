@@ -30,7 +30,7 @@ void Socket::init(unsigned long server, unsigned short port)
 void Socket::connect()
 {
 	int count = 0;
-	while(0 != ::connect(sock,(sockaddr*)&addr_srv,sizeof(sockaddr)) && count < 10)
+	while(0 != ::connect(sock,(sockaddr*) &addr_srv,sizeof(sockaddr)) && count < 10)
 	{
 		count++;
 		Sleep(10);

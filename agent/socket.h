@@ -28,4 +28,4 @@ private:
    unsigned short _port;
    SOCKET sock;
    sockaddr_in addr_srv;
- }
+ };

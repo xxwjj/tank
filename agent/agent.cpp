@@ -92,7 +92,7 @@ bool Agent::Once(unsigned int time_out)
     }
     else if (MSG_LEG_END == msg_type)
     {
-##if SHOW_TIME
+#if SHOW_TIME
         printf("Longest Round : %.3f ms\n",CONNECTOR->_longest_time/1000.0);
 #endif
         log("Longest Round : %.3f ms\n", CONNECTOR->_longest_time/1000.0);

@@ -23,7 +23,7 @@ typedef Graph_SearchAStar<SiegeGraph, Heuristic_Manhattan> SiegeGraphAStar;
 
 void PriAction(Player*player, Vector2D dir, PRIOPITY_BETTER_MOVE pri)
 {
-	for(ActionVecIt iter = player=>actionList.begin(); iter != player->actionList.end(); iter++)
+	for(ActionVecIt iter = player->actionList.begin(); iter != player->actionList.end(); iter++)
 	{
 		if(iter->disable)
 			continue;
@@ -36,7 +36,7 @@ void PriAction(Player*player, Vector2D dir, PRIOPITY_BETTER_MOVE pri)
 
 void PriFireAction(Player*player,Vector2D dir,PRIOPITY_BETTER_MOVE pri)
 {
-	for(ActionVecIt iter = player=>actionList.begin(); iter != player->actionList.end(); iter++)
+	for(ActionVecIt iter = player->actionList.begin(); iter != player->actionList.end(); iter++)
 	{
 		if(iter->disable)
 			continue;
@@ -133,7 +133,7 @@ PlayerVecIt ChooseCenterPlayer(Leg&leg,Vector2D center)
 	return target;
 }
 
-void CalcFoeDist(Leg &leg,SiegeGraph &graph,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>>> &dist_map)
+void CalcFoeDist(Leg &leg,SiegeGraph &graph,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>> &dist_map)
 {
 	const int MAX_DIST = leg._matrix_map._height * leg._matrix_map._width;
 	for(PlayerVecIt foe_iter = leg._map_info._enemy_players.begin(); foe_iter!=leg._map_info._enemy_players.end(); foe_iter++)
@@ -163,7 +163,7 @@ void CalcFoeDist(Leg &leg,SiegeGraph &graph,map<PlayerVecIt,map<PlayerVecIt,map<
 	}
 }
 
-void GetNearestFoe(Leg &leg,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>>>&dist_map,list<PlayerVecIt> &process_list)
+void GetNearestFoe(Leg &leg,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>>&dist_map,list<PlayerVecIt> &process_list)
 {
 	//计算最近foe
 	for(PlayerVecIt player = leg._map_info._friend_players.begin(); player!=leg._map_info._friend_players.end(); player++)
@@ -176,4 +176,3 @@ void GetNearestFoe(Leg &leg,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>>>&
 		player->_nearest_foe_dist = leg._map_info._max_distance;
 		int min_dist = leg._map_info._max_distance;
 		for(map<PlayerVecIt,map<Vector2D,int>>::iterator foe_dist_iter 
-

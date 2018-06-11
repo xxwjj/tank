@@ -1,7 +1,7 @@
 #include "Thread.h"
 #include <process.h>
 
-Thread::Thread();_is_finished(false), _hThread(INVALID_HANDLE_VALUE)
+Thread::Thread():_is_finished(false), _hThread(INVALID_HANDLE_VALUE)
 {
 }
 
