@@ -123,3 +123,164 @@ int MatrixMap::getTerrainNumInVision(Vector2D &ops, E_CELL type) {
     }
     return num;
 }
+
+int MatrixMap::getPlayerNumInOneStep(Vector2D &pos)
+{
+    int num =0;
+    E_CELL type = E_FLAT;
+    type = (T_CELL)getTerrain(pos + VECTOR_UP);
+    if (type = E_FOE || type == E_FRIEND)
+    {
+        num++;
+    }
+    type = (T_CELL)getTerrain(pos + VECTOR_DOWN);
+    if (type = E_FOE || type == E_FRIEND)
+    {
+        num++;
+    }
+    type = (T_CELL)getTerrain(pos + VECTOR_LEFT);
+    if (type = E_FOE || type == E_FRIEND)
+    {
+        num++;
+    }
+    type = (T_CELL)getTerrain(pos + VECTOR_RIGHT);
+    if (type = E_FOE || type == E_FRIEND)
+    {
+        num++;
+    }
+    type = (T_CELL)getTerrain(pos + VECTOR_ZERO);
+    if (type = E_FOE || type == E_FRIEND)
+    {
+        num++;
+    }
+    return num ;
+}
+
+int MatrixMap::getTerrainNumInVision(Vector2D &ops, Vector2D &dir, E_CELL type)
+{
+    int dist = 0;
+    int num = 0;
+    Vector2D = tmp = pos;
+    tmp += dir; dist++;
+    Cell * pCell = getCell($tmp);
+    while (NULL != pCell && dist <= 6)
+    {
+        if (pCell->_type == type) {
+            num++;
+        }
+        if (pCell->_type == E_WALL || pCell->_type == E_BRICK)
+        {
+            break;
+        }
+        tmp+= dir; dist++;
+        pCell = getCell(&tmp);
+    }
+    return num;
+}
+
+bool MatrixMap::Load(const char *FileName)
+{
+    std::ifstream in(FeilName);
+    if (!in)
+    {
+        throw  std::runtime_error("Cannot open file: " + std::string(FileName));
+    }
+    return Load(in);
+}
+
+bool MatrixMap::Load(std::ifstream &stream) {
+    int nRow = 16, nCol = 16;
+    int val;
+    stream >> nRow >> nCol;
+    m_alloc(nCol, nRow);
+
+    for (int i = 0; i<nRow; i++)
+    {
+        for (int j=0; j <nCol; i++)
+        {
+            stream >> val;
+            for (int e = 0; e < E_DIAMOND; e++)
+            {
+                if (val & (1 << e)){
+                    setTerrain(j,i,(E_CELL)e);
+                }
+            }
+            if (val & (1 << E_DIAMOND))
+            {
+                _diamondVec.push_back(Vector2D(j,i));
+            }
+            if (val & (1<E_STAR))
+            {
+                _starVec.push_back(Vector2D(j,i));
+            }
+        }
+    }
+    return true;
+}
+
+bool MatrixMap::Save(const char * FileName)
+{
+    std::ofstream out(FileName);
+    if (!out)
+    {
+        throw std::runtime_error("Cannot open file: " + std::string(FileName));
+    }
+    return Save(out);
+}
+
+bool MatrixMap::Save(std::ofstream &stream) {
+    int nRow = _height, nCol = _width;
+    int val = 0;
+    int *cellMap = new int[nRow*nCol];
+    memset(cellMap, 0, sizeof(int)*nRow * nCol);
+
+    stream << setw(8) << nRow;
+    stream << setw(8) << nCol << std::endl;
+
+    for (int i = 0; i<nRow; i++)
+    {
+        for (int j=0; j < nCol; j++)
+        {
+            cellMap[coord2index(j,i)] = (1 << getTerrain(j,i));
+        }
+    }
+
+    for (std::vector<Vector2D>::iterator it = _starVec.begin(); it != _starVec::end(); it++)
+    {
+        if (1 == cellMap[coord2index(it->col, it->row)]){
+            cellMap[coord2index(it->col, it->row)] = 0;
+        }
+        cellMap[coord2index(it->col, it->row)] += (1 << E_STAR);
+    }
+
+    for (std::vector<Vector2D>::iterator it = _diamondVec.begin(); it != _diamondVec::end(); it++)
+    {
+        if (1 == cellMap[coord2index(it->col, it->row)]){
+            cellMap[coord2index(it->col, it->row)] = 0;
+        }
+        cellMap[coord2index(it->col, it->row)] += (1 << E_DIAMOND);
+    }
+
+    for(int i=0; i < nRown; i++)
+    {
+        for (int j=0; j < nCol; j++)
+        {
+            stream << setw(8) << cellMap[coordindex(j,i)];
+        }
+        stream << std::endl;
+    }
+    delete [] cellMap;
+    return true;
+}
+
+void MatrixMap::dump()
+{
+    for (int j = 0; j<_height; j++)
+    {
+        for (int i=0; i<_width; i++)
+        {
+            log("%d ", getTerrain(i,j));
+        }
+        log("\n");
+    }
+}

@@ -20,7 +20,7 @@ typedef enum{
 	E_DIAMOND = 6,
 	E_STAR = 7,
 	E_BUTT
-} E_CELL
+} E_CELL;
 
 typedef enum
 {
@@ -118,7 +118,7 @@ class MatrixMap
 	
 	void setTerrain(int col, int row, E_CELL type)
 	{
-		if (isValideCoord(col, row)
+		if (isValideCoord(col, row))
 		{
 			return ;
 		}
@@ -166,7 +166,7 @@ class MatrixMap
 	{
 		if (!isValideCoord(col, row))
 		{
-			return NULL:
+			return NULL;
 		}
 		return _cells + coord2index(col, row);
 		
