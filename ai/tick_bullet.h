@@ -33,7 +33,7 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return;
-	 if(tick < 0 || tick >= MAX_TICK_NUM)
+	 if(tick < 0 || tick > = MAX_TICK_NUM)
 		 return;
 	 _foeBullets[pos.col][pos.row][tick] += 1;
  }
@@ -60,7 +60,7 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return 0;
-	 if(tick < 0 || tick >= MAX_TICK_NUM)
+	 if(tick < 0 || tick > = MAX_TICK_NUM)
 		 return 0;
 	 return _foeBullets[pos.col][pos.row][tick];
  }
@@ -69,7 +69,7 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return;
-	 if(tick < 0 || tick >= MAX_TICK_NUM)
+	 if(tick < 0 || tick > = MAX_TICK_NUM)
 		 return;
 	 _ownBullets[pos.col][pos.row][tick] += 1;
  }
@@ -78,7 +78,7 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return 0;
-	 if(tick < 0 || tick >= MAX_TICK_NUM)
+	 if(tick < 0 || tick > = MAX_TICK_NUM)
 		 return 0;
 	 return _ownBullets[pos.col][pos.row][tick];
  }
