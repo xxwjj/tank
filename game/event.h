@@ -2,6 +2,8 @@
 
 #include "game.h"
 
+using namespace std;
+
 enum  EVENT_TYPE
 {
     E_COOR_ATTACK,

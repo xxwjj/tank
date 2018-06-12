@@ -26,7 +26,7 @@ class CalcBullet : public BehaviourTree::Node
 {
 public :
 	string nodename;
-	CalcBullet(String name="")
+	CalcBullet(string name="")
 		{
 		nodename = name;
 		}
@@ -156,9 +156,9 @@ class FinalDecision: public BehaviourTree::Node{
 	public:
 		string nodename;
 	FinalDecision(string name = "")
-		{
+	{
 		nodename = name;
-		}
+	}
 	private:
 	 virtual bool run(Leg &l) ;
 };

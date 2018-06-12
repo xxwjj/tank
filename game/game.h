@@ -4,7 +4,8 @@
 #include "constants.h"
 #include <vector>
 #include <list>
-#include <matrix>
+#include <set>
+//#include <matrix>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "matrix_map.h"
@@ -34,7 +35,7 @@ public:
 
     int _totalEnemyNum[MAX_VEC_DIR_NUM];
     int _totalFriendNum[MAX_VEC_DIR_NUM];
-    std::vector<Player>::itertor _nearest_foe;
+    std::vector<Player>::iterator _nearest_foe;
     int _nearest_foe_dist;
     std::set<Vector2D> moveList;
     std::set<Vector2D> fireList;
@@ -57,7 +58,7 @@ public:
 
     void ResetActionList()
     {
-        actionList.Reset(VECTOR_UP);
+        actionList.Reset();
         moveList.insert(VECTOR_DOWN);
         moveList.insert(VECTOR_LEFT);
         moveList.insert(VECTOR_RIGHT);
@@ -90,8 +91,8 @@ class Diamond
 {
 public:
     Diamond(){}
-    Diamond(int col, int cow):_pos(col, row) {}
-    Vectorw2D _pos;
+    Diamond(int col, int row):_pos(col, row) {}
+    Vector2D _pos;
     int _count;
 };
 typedef  std::vector<Diamond> DiamondVec;
@@ -103,12 +104,10 @@ public:
     Star(){}
     Star(int col, int row):_pos(col, row){}
     Vector2D _pos;
-
 };
 
 typedef  std::vector<Star> StarVec;
 typedef  std::vector<Star>::iterator StarVecIt;
-
 
 class Bullet
 {
@@ -120,7 +119,7 @@ class Bullet
 
     bool _deleted;
 
-    Bullet():_pos(0,0), _direction(0,0), team(0),_deleted(false), _super_bullet(false){}
+    Bullet():_pos(0,0), _direction(0,0), _team(0),_deleted(false), _super_bullet(false){}
     Bullet(Vector2D pos, Vector2D dir, int team, bool super)
     {
         _pos = pos;
@@ -129,12 +128,10 @@ class Bullet
         _deleted = false;
         _super_bullet = super;
     }
-
 };
 
 typedef  std::vector<Bullet> BulletVec;
 typedef  std::vector<Bullet>::iterator BulletVecIt;
-
 
 class Wall
 {
@@ -143,7 +140,6 @@ public:
     Wall(int col, int row):_pos(col, row) {}
     Vector2D _pos;
 };
-
 
 typedef  std::vector<Wall> WallVec;
 typedef  std::vector<Wall>::iterator WallVecIt;
@@ -156,10 +152,8 @@ public:
     Vector2D _pos;
 };
 
-
 typedef  std::vector<River> RiverVec;
 typedef  std::vector<River>::iterator RiverVecIt;
-
 
 class Brick
 {
@@ -171,7 +165,7 @@ public:
 
 
 typedef  std::vector<Brick> BrickVec;
-typedef  std::vector<Brick>::iterator BrickVec;
+typedef  std::vector<Brick>::iterator BrickVecIt;
 
 class GameMap
 {
@@ -217,9 +211,9 @@ public:
     PlayerVecIt getEnemy(int id)
     {
         PlayerVecIt  iter = _enemy_players.begin();
-        for (;iter != _enemy_players.end(); iter++
+        for (;iter != _enemy_players.end(); iter++)
         {
-            if (iter->id == id)
+            if (iter->_id == id)
             {
                 return iter;
             }
@@ -245,7 +239,7 @@ public:
         _ownBullets.clear();
         _foeBullets.clear();
         _height = 0;
-        width = 0;
+        _width = 0;
     }
 };
 
@@ -309,8 +303,8 @@ public:
             if (!action_getted)
             {
                 Action default_action;
-                defatul_action.disable = false;
-                default_action.player_id = iter->id;
+                default_action.disable = false;
+                default_action.player_id = iter->_id;
                 default_action.fire = VECTOR_ZERO;
                 default_action.move = VECTOR_ZERO;
                 default_action._is_super_bullet = false;

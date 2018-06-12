@@ -8,6 +8,6 @@
 
 #define MAX_DIR_NUM (5)
 
-#define  FRIEND_NUM (4)
+#define FRIEND_NUM (4)
 
-#DEFINE ENEMY_NUM (4)
+#define ENEMY_NUM (4)

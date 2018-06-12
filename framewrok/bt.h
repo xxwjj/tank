@@ -7,8 +7,9 @@
 class BehaviourTree {
 public:
 	class Node {
+	public:
 		BehaviourTree * boss;
-		virtaul bool run(Leg &leg)= 0;
+		virtual bool run(Leg &leg)=0;
 	};
 
 	class ComposeiteNode : public Node {
@@ -22,12 +23,12 @@ public:
 	public:
 		virtual bool  run(Leg & leg) override {
 			std::vector<Node*>::const_iterator iter;
-			for (iter = getChildren().gegin(); (iter != getChildren().end()) && (boos==NULL || boss->stopTraversal == false) ; iter++)
+			for (iter = getChildren().begin(); (iter != getChildren().end()) && (boss==NULL || boss->stopTraversal == false) ; iter++)
 			{
 				if ((*iter)->run(leg))
 					return true;
 			}
-			return flase;
+			return false;
 		}
 	};
 
@@ -40,7 +41,7 @@ public:
 			for (iter = temp.begin(); iter != temp.end() && (boss==NULL || boss->stopTraversal== false); iter++)
 			{
 				if ((*iter)->run(leg))
-					return ture;
+					return true;
 			}
 			return false;
 		}
@@ -60,7 +61,7 @@ public:
 
 	class Parallel :public ComposeiteNode {
 	public:
-		virtual bool  run(Leg leg) override {
+		virtual bool  run(Leg &leg) override {
 			std::vector<Node*>::const_iterator iter;
 			for (iter = getChildren().begin(); iter != getChildren().end() && (boss == NULL || boss->stopTraversal==false); iter++) {
 				(*iter)->run(leg);
@@ -86,7 +87,7 @@ public:
 		friend class BehaviourTree;
 
 		virtual bool run(Leg &leg) override {
-			oss->stopTraversal = false;
+			boss->stopTraversal = false;
 			return getChild()->run(leg);
 		}
 	};
@@ -134,10 +135,10 @@ public:
 
 private:
     bool stopTraversal;
-    Root & root;
+    Root *root;
 public:
-    BehaviourTree() : root(new root), stopTraversal(false) {root->boss = this;}
-    void setRootChild(Node* rootChild) const {root.setChild(rootChild);}
+    BehaviourTree() : root(new Root), stopTraversal(false) {root->boss = this;}
+    void setRootChild(Node* rootChild) const {root->setChild(rootChild);}
     void stop() {stopTraversal = true;}
     bool run(Leg &leg) const {return root->run(leg);}
 };

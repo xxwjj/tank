@@ -1,5 +1,5 @@
 #include <vector>
-#include <strring>
+#include <string>
 #include "agent.h"
 #include "socket.h"
 #include "game.h"
@@ -15,7 +15,7 @@ void Agent::Registation(int team_id)
 {
     leg._team_id = team_id;
     RegMessage regs(team_id, "everest");
-    string output = regs.toString();
+    string output = regs.tostring();
     CONNECTOR->send(output);
 }
 
@@ -92,7 +92,7 @@ bool Agent::Once(unsigned int time_out)
     }
     else if (MSG_LEG_END == msg_type)
     {
-##if SHOW_TIME
+#if SHOW_TIME
         printf("Longest Round : %.3f ms\n",CONNECTOR->_longest_time/1000.0);
 #endif
         log("Longest Round : %.3f ms\n", CONNECTOR->_longest_time/1000.0);
@@ -219,7 +219,7 @@ void Agent::SendActions()
 #endif
 
     ActionMessage msg(leg,_action_list);
-    CONNECTOR->send(msg.toString());
+    CONNECTOR->send(msg.tostring());
 }
 
 void Agent::KillWorkingThread()
@@ -243,3 +243,4 @@ void Agent::WaitLastWorkingThreadEnd()
     }
 #endif
 }
+
