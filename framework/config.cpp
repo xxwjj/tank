@@ -45,7 +45,7 @@ Config::Config() :m_Delimiter(string(1,'=')), m_Comment(string(1,'#')){
 
 }
 
-bool Config::KeyExists(cosnt std::string &key) const
+bool Config::KeyExists(const std::string &key) const
 {
     mapci p = m_Contents.find(key);
     return (p != m_Contents.end());
