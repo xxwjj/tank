@@ -33,12 +33,12 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return;
-	 if(tick < 0 || tick > = MAX_TICK_NUM)
+	 if(tick < 0 || tick >= MAX_TICK_NUM)
 		 return;
 	 _foeBullets[pos.col][pos.row][tick] += 1;
  }
  
- void recordFoeBulletDir(Vector2D &pos ,vector2d &dir, int tick)//如果有多个只记录最后一个
+ void recordFoeBulletDir(Vector2D &pos ,Vector2D &dir, int tick)//如果有多个只记录最后一个
  {
    if(pos.col < 0 || pos.row < 0 || pos.col >= _width || pos.row >= _height)
 	 return;
@@ -47,7 +47,7 @@ public:
    _foeBulletDir[pos.col][pos.row][tick] = dir;
  }
  
- Vector2d getFoeBulletDir(Vector2D &pos , int tick)
+ Vector2D getFoeBulletDir(Vector2D &pos , int tick)
  {
    if(pos.col < 0 || pos.row < 0 || pos.col >= _width || pos.row >= _height)
 	 return Vector2D(0,0);
@@ -60,7 +60,7 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return 0;
-	 if(tick < 0 || tick > = MAX_TICK_NUM)
+	 if(tick < 0 || tick >= MAX_TICK_NUM)
 		 return 0;
 	 return _foeBullets[pos.col][pos.row][tick];
  }
@@ -69,7 +69,7 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return;
-	 if(tick < 0 || tick > = MAX_TICK_NUM)
+	 if(tick < 0 || tick >= MAX_TICK_NUM)
 		 return;
 	 _ownBullets[pos.col][pos.row][tick] += 1;
  }
@@ -78,7 +78,7 @@ public:
  {
 	 if(pos.col < 0 || pos.row < 0|| pos.col >= _width || pos.row >= _height)
 		 return 0;
-	 if(tick < 0 || tick > = MAX_TICK_NUM)
+	 if(tick < 0 || tick >= MAX_TICK_NUM)
 		 return 0;
 	 return _ownBullets[pos.col][pos.row][tick];
  }

@@ -3,7 +3,7 @@
 
 using namespace std;
 
-void Action::disable(const char *func, int line) {
+void Action::disabled(const char *func, int line) {
     disable = true;
 #ifdef  _DEBUG
     log("Disable Action Player:%d, fire(%d,%d,%d), move(%d,%d), priority(%d,%d,%d,%d).[%s,%d]\n",

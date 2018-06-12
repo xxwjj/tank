@@ -4,10 +4,10 @@
 #include "define.h"
 #include "constants.h"
 #include "vector2d.h"
-#inlucde <cassert>
+#include <cassert>
 #include <string>
 #include <iostream>
-#include <fsStream>
+#include <fStream>
 #include <vector>
 
 typedef enum{
@@ -29,7 +29,7 @@ typedef enum
 	OWE_BULLET,
 } E_BULLET;
 
-class cell
+class Cell
 {
 	public:
 	E_CELL _type;
@@ -37,7 +37,7 @@ class cell
 	Vector2D _point;
 	
 	bool _deleted;
-	Cell::Cell(void)
+	Cell(void)
 	{
 		_point.Zero();
 		_type = E_FLAT;
@@ -56,7 +56,7 @@ class MatrixMap
 	std::vector<Vector2D> _starVec;
 	std::vector<Vector2D> _diamondVec;
 	public:
-	MatrixMap(void):_width(0), height(0), _cells(NULL) {
+	MatrixMap(void):_width(0), _height(0), _cells(NULL) {
 		
 	}
 	~MatrixMap(void) {m_free();}
@@ -97,7 +97,7 @@ class MatrixMap
 		return false;
 		
 	}
-	bool isValideCoord(Vector2D &ops)
+	bool isValideCoord(Vector2D &pos)
 	{
 		if (((pos.col >= 0) && (pos.col <_width)) && ((pos.row >= 0) && (pos.row < _height)))
 		{
@@ -122,7 +122,7 @@ class MatrixMap
 		{
 			return ;
 		}
-		return (_cells+coord2index(col, row))->_type;
+		(_cells+coord2index(col, row))->_type = type;
 	}
 	
 	int getTerrain(int col, int row)
@@ -131,31 +131,31 @@ class MatrixMap
 		{
 			return E_WALL;
 		}
-		return (_cells+coord2indx(col, row))->_type;
+		return (_cells+coord2index(col, row))->_type;
 	}
 
 	int getTerrain(Vector2D *point)
 	{
-		if (!isValideCoord(poit->col, point->row))
+		if (!isValideCoord(point->col, point->row))
 		{
 			return E_WALL;
 		}
-		return (_cells+coord2indx(point->col, point->row))->_type;
+		return (_cells+coord2index(point->col, point->row))->_type;
 	}
 	
 	
 	int getTerrain(Vector2D &point)
 	{
-		if (!isValideCoord(poit.col, point.row))
+		if (!isValideCoord(point.col, point.row))
 		{
 			return E_WALL;
 		}
-		return (_cells+coord2indx(point.col, point.row))->_type;
+		return (_cells+coord2index(point.col, point.row))->_type;
 	}
 	
 	Cell * getCell(Vector2D *point)
 	{
-		if (! isValideCoord(point->col, point-row))
+		if (!isValideCoord(point->col, point->row))
 		{
 			return NULL;
 		}

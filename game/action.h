@@ -47,7 +47,7 @@ class Action {
 		PRIORITY_DIAMON priDiamon;
 		PRIORITY_DEAD_END priDeadEnd;
 		PRIORITY_BETTER_MOVE priSiege;
-		void disable(const char *func, int line);
+		void disabled(const char *func, int line);
 		Action():priEscape(E_INFO) , disable(false), player_id(0) {}
 		Action(int player, Vector2D move_dir, Vector2D fire_dir, bool super_bullet = false):player_id(player), disable(false), priEscape(E_INFO), fire(fire_dir), move(move_dir),_is_super_bullet(super_bullet) {}
 
@@ -137,24 +137,22 @@ class ActionVec:public std::vector<Action>
 			push_back(Action(player_id, VECTOR_ZERO, VECTOR_ZERO,true));
 			
 		}
-		
-		
+			
 		void Reset(bool have_super_bullet = false)
 		{
 			for (ActionVecIt iter = begin(); iter != end(); iter ++)
-			{
-				
+			{				
 				if (iter->_is_super_bullet)
 				{
 					iter->disable =!have_super_bullet;
 				} else {
-					iter->disable =fasle;
+					iter->disable =false;
 				}
-			}
-			iter->preEscap = E_INFO;
+				
+			iter->priEscape = E_INFO;
 			iter->priDiamon = NOT_FORWARD_DIAMON;
 			iter->priDeadEnd = NO_ROAD;
-			iter->priSiege = E_NO_BETTER;
-			
+			iter->priSiege = E_NO_BETTER;			
+		    }
 		}
 };
