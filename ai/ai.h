@@ -161,21 +161,31 @@ class FinalDecision: public BehaviourTree::Node{
 		}
 	private:
 	 virtual bool run(Leg &l) ;
-	 BehaviourTree bt;
-	 BehaviourTree::Sequence strategys;
-	 //策略点
-	 ContiDecision isContinue;
-	 CalcBullet calcBullet;
-	 ExcludeFoolSteps excludeFoolSteps;
-	 AvoidDeath avoidDeath;
-	 RiskAsses riskAssessment;
-	 Rescue rescuePartner;
-	 FilterFire filterFire;
-	 DigDiamond digDiamondInfo;
-	 EsacpeDeadEnd esacpeDeadEnd;
-	 Siege siege;
-	 FinalDecision finalDecision;
 };
 
 
 
+///
+class AI
+{
+public:
+	AI(void);
+	~AI(void);
+	void stop(){bt.stop();}
+	void update(Leg &leg/*, std::vector<Action> &actions*/);
+private:
+	BehaviourTree bt;
+	BehaviourTree::Sequence strategys;
+	//策略点
+	ContiDecision isContinue;
+	CalcBullet   calcBullet;
+	ExcludeFoolSteps excludeFoolSteps;
+	AvoidDeath avoidDeath;
+	RiskAssess   riskAssessment;
+	Rescue  rescuePartner;
+	FilterFire filterFire;
+	DigDiamond  digDiamondInfo;
+	EsacpeDeadEnd escapeDeadEnd;
+	Siege  siege;
+	FinalDecision  finalDecision;
+};
