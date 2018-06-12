@@ -18,7 +18,7 @@ const string MSG_DATA = "msg_data";
 class IMessage
 {
 	public:
-	string tostring()
+	string toString()
 	{
 		Json::FastWriter writer;
 		return writer.write(value);

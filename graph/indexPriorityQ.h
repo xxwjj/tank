@@ -115,6 +115,11 @@ public:
 
         return m_Heap[m_iSize--];
     }
+	
+	int Top()
+	{
+		return m_Heap[1];
+	}
 
     size_t size()
     {

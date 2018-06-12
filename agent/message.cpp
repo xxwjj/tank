@@ -95,13 +95,14 @@ void IMessage::ProcessRound(Leg& leg, Json::Value value)
 	Json::Value boxes_node = value[MSG_DATA]["brick_walls"];
 	for(unsigned int i = 0; i < boxes_node.size(); ++i)
 	{
-	  River river;
-	  Json::Value river_node = rivers_node[i];
-	  river._pos.col = river_node["x"].asInt();
-	  river._pos.row = river_node["y"].asInt();
-	  leg._map_info._rivers.push_back(river);
+	  Brick box;
+	  Json::Value box_node = boxes_node[i];
+	  box._pos.col = box_node["x"].asInt();
+	  box._pos.row = box_node["y"].asInt();
+	  leg._map_info._bricks.push_back(box);
 	  //刷新matrix地图信息
-	  leg._matrix_map.setTerrain(river._pos.col,river._pos.row,E_RIVER);
+	  leg._matrix_map.setTerrain(box._pos.col,box._pos.row,E_BRICK);
+	  assert(leg._matrix_map.getTerrain(box._pos.col,box._pos.row) == E_BRICK);
 	}
 	
 	leg._map_info._walls.clear();
@@ -135,7 +136,7 @@ void IMessage::ProcessRound(Leg& leg, Json::Value value)
 	for(unsigned int i = 0; i < diamonds_node.size(); ++i)
 	{
 	  Diamond diamond;
-	  Json::Value diamond_node = diamond_node[i];
+	  Json::Value diamond_node = diamonds_node[i];
 	  diamond._pos.col = diamond_node["x"].asInt();
 	  diamond._pos.row = diamond_node["y"].asInt();
 	  diamond._count = diamond_node["point"].asInt();
@@ -145,19 +146,19 @@ void IMessage::ProcessRound(Leg& leg, Json::Value value)
 	}
 	
 	leg._map_info._stars.clear();
-	Json::Value stars_node = value[MSG_DATA]["starts"];
+	Json::Value stars_node = value[MSG_DATA]["stars"];
 	for(unsigned int i = 0; i < stars_node.size(); ++i)
 	{
 	  Star star;
 	  Json::Value star_node = stars_node[i];
 	  star._pos.col = star_node["x"].asInt();
 	  star._pos.row = star_node["y"].asInt();
-	  leg._map_info.stars.push_back(star);
+	  leg._map_info._stars.push_back(star);
 	  //刷新matrix地图信息
-	  leg._matrix_map.setTerrain(star._pos.col,star._pos.row,E_STAR);
+	  //leg._matrix_map.setTerrain(star._pos.col,star._pos.row,E_STAR);
 	}
 	
-	//
+	//所有player设置为死亡
 	for(PlayerVecIt iter = leg._map_info._friend_players.begin(); iter != leg._map_info._friend_players.end(); iter++)
 	{
 		iter->_alive = false;
@@ -173,13 +174,13 @@ void IMessage::ProcessRound(Leg& leg, Json::Value value)
 	Json::Value players_node = value[MSG_DATA]["players"];
 	for(unsigned int i = 0; i < players_node.size(); ++i)
 	{
-		Json::Value players_node = players_node[i];
+		Json::Value player_node = players_node[i];
 		
 		int id = player_node["id"].asInt();
 		int team_id =player_node["team"].asInt();
 		int col = player_node["x"].asInt();
 		int row = player_node["y"].asInt();
-		bool have_super_bullt = player_node["super_bullet"].asBool();
+		bool have_super_bullet = player_node["super_bullet"].asBool();
 		PlayerVec &player_vec = (team_id == leg._team_id)? leg._map_info._friend_players:leg._map_info._enemy_players;
 		PlayerVecIt iter;
 		for(iter = player_vec.begin(); iter != player_vec.end(); iter++)
@@ -198,7 +199,7 @@ void IMessage::ProcessRound(Leg& leg, Json::Value value)
 			tmp._pos.col = col;
 			tmp._pos.row = row;
 			tmp._born_pos = tmp._pos;
-			tmp._have_super_bullet = have_super_bullt;
+			tmp._have_super_bullet = have_super_bullet;
 			player_vec.push_back(tmp);
 			if(team_id == leg._team_id)
 			{
@@ -214,7 +215,7 @@ void IMessage::ProcessRound(Leg& leg, Json::Value value)
 			iter->_pos.row = row;
 			if( iter->_born_pos == VECTOR_LEFT)//born_pos init for left
 				iter->_born_pos = iter->_pos;
-			iter->_have_super_bullet = have_super_bullt;
+			iter->_have_super_bullet = have_super_bullet;
 			iter->_move_to_nearest_foe.clear();
 			iter->ResetActionList();
 			iter->ClearEvent();
@@ -223,15 +224,19 @@ void IMessage::ProcessRound(Leg& leg, Json::Value value)
 		if(team_id == leg._team_id)
 		   leg._matrix_map.setTerrain(col,row,E_FRIEND);
 	    else
-		   leg._matrix_map.setTerrain(col,row,E_FOW);
+		   leg._matrix_map.setTerrain(col,row,E_FOE);
 	}
 	
-	Json::Value teams_node = teams_node[i];
+	Json::Value teams_node = value[MSG_DATA]["teams"];
+	for(unsigned int i = 0; i < teams_node.size(); ++i)
+	{
+	Json::Value team_node = teams_node[i];
 	int id = team_node["id"].asInt();
 	leg._teams[id]._point = team_node["point"].asInt();
 	leg._teams[id]._remain_life = team_node["remain_life"].asInt();
 #ifdef _DEBUG
 #endif
+	}
 }
 
 std::string IMessage::Vector2String(Vector2D vec)

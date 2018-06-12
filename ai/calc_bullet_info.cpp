@@ -1,7 +1,7 @@
 #include "ai.h"
 #include "debug.h"
 
-static Vector2D dirArray[MAX_VEC_DIR_NUM] = {VECTOR_IP,VECTOR_DOWN,VECTOR_LEFT,VECTOR_RIGHT,VECTOR_ZERO};
+static Vector2D dirArray[MAX_VEC_DIR_NUM] = {VECTOR_UP,VECTOR_DOWN,VECTOR_LEFT,VECTOR_RIGHT,VECTOR_ZERO};
 
 void CalcBullet::calcPlayerDangerousInfo(Leg &leg)
 {
@@ -91,7 +91,7 @@ bool CalcBullet::run(Leg &leg)
 	std::vector<Bullet> _tmpOwnBullets =leg._map_info._ownBullets;
 	std::vector<Bullet> _tmpFoeBullets =leg._map_info._foeBullets;
 	
-	tmpMap.dump()；
+	tmpMap.dump();
 	calcPlayerDangerousInfo(leg);
 	
 	//根据敌人信息增加bullet
@@ -111,7 +111,7 @@ bool CalcBullet::run(Leg &leg)
 
 	//根据友军信息增加bullet
 	std::vector<Player>::iterator iterFriend;
-	iterFriend = leg._map_info,_friend_players.begin();
+	iterFriend = leg._map_info._friend_players.begin();
 	for(;iterFriend != leg._map_info._friend_players.end();iterFriend++)
 	{
 		if((*iterFriend)._alive != true)
@@ -128,29 +128,35 @@ bool CalcBullet::run(Leg &leg)
 		if(leg.haveSuperBulletInDir(iterFriend->_pos,VECTOR_UP,FOE_BULLET,2)
 			|| leg.haveBulletNumInDir(iterFriend->_pos,VECTOR_UP,FOE_BULLET,2) > 1)
 		{
-			_tmpFoeBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_UP,(*iterFriend)._team,iterFriend->_have_super_bullet));	
+			_tmpOwnBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_UP,(*iterFriend)._team,iterFriend->_have_super_bullet));	
 			iterFriend->_ownBulletCalcSuper = iterFriend->_have_super_bullet;
             iterFriend->_ownBulletCalcDir = VECTOR_UP;
 		}
 		else if(leg.haveSuperBulletInDir(iterFriend->_pos,VECTOR_DOWN,FOE_BULLET,2)
 			|| leg.haveBulletNumInDir(iterFriend->_pos,VECTOR_DOWN,FOE_BULLET,2) > 1)
 		{
-			_tmpFoeBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_DOWN,(*iterFriend)._team,iterFriend->_have_super_bullet));	
+			_tmpOwnBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_DOWN,(*iterFriend)._team,iterFriend->_have_super_bullet));	
 			iterFriend->_ownBulletCalcSuper = iterFriend->_have_super_bullet;
             iterFriend->_ownBulletCalcDir = VECTOR_DOWN;
 		}else if(leg.haveSuperBulletInDir(iterFriend->_pos,VECTOR_LEFT,FOE_BULLET,2)
 			|| leg.haveBulletNumInDir(iterFriend->_pos,VECTOR_LEFT,FOE_BULLET,2) > 1)
 		{
-			_tmpFoeBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_LEFT,(*iterFriend)._team,iterFriend->_have_super_bullet));	
+			_tmpOwnBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_LEFT,(*iterFriend)._team,iterFriend->_have_super_bullet));	
 			iterFriend->_ownBulletCalcSuper = iterFriend->_have_super_bullet;
             iterFriend->_ownBulletCalcDir = VECTOR_LEFT;
 		}else if(leg.haveSuperBulletInDir(iterFriend->_pos,VECTOR_RIGHT,FOE_BULLET,2)
-			|| leg.haveBulletNumInDir(iterFriend->_pos,VECTOR_RIGHT,FOE_BULLET,2) > 1)
+			|| (leg.haveBulletNumInDir(iterFriend->_pos,VECTOR_RIGHT,FOE_BULLET,2) > 1))
 		{
-			_tmpFoeBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_RIGHT,(*iterFriend)._team,iterFriend->_have_super_bullet));	
+			_tmpOwnBullets.push_back(Bullet((*iterFriend)._pos,VECTOR_RIGHT,(*iterFriend)._team,iterFriend->_have_super_bullet));	
 			iterFriend->_ownBulletCalcSuper = iterFriend->_have_super_bullet;
             iterFriend->_ownBulletCalcDir = VECTOR_RIGHT;
 		}
+		 else
+        {
+            _tmpOwnBullets.push_back(Bullet((*iterFriend)._pos, (*iterFriend)._dangerousDir, (*iterFriend)._team,false));
+            iterFriend->_ownBulletCalcSuper = false;
+            iterFriend->_ownBulletCalcDir = iterFriend->_dangerousDir;
+        }
 	}
 	
 	int tick = 0;
@@ -174,7 +180,7 @@ bool CalcBullet::run(Leg &leg)
 			{
 				continue;
 			}
-			leg._tick_bullet.inFoeBulletNum((*iterEnemy)._pos,tick);
+			leg._tick_bullet.incFoeBulletNum((*iterEnemy)._pos,tick);
 		}
 		tmpMap.clearDeletedTerrain();
 		
@@ -192,14 +198,9 @@ bool CalcBullet::run(Leg &leg)
 				{
 					continue;
 				}
-				//相同位置
-				if(((*iterEnemy)._deleted == true)
-				{
-					continue;
-				}
-				
+				//相同位置			
 				if(((*iterFriend)._pos == (*iterEnemy)._pos)
-					&& (((&iterFriend)._direction+(*iterEnemy)._direction).isZero()
+					&& (((*iterFriend)._direction+(*iterEnemy)._direction).isZero()
 				||iterFriend->_direction.isPerp(iterEnemy->_direction)))
 				{
 					if(bulletDestroy((*iterFriend),(*iterEnemy)))

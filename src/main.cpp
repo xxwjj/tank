@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
         return -1;
     }
 
-    in team_id = atoi(argv[1]);
+    int team_id = atoi(argv[1]);
     unsigned long server_ip = inet_addr(argv[2]);
     unsigned short server_port = atoi[argv[3]];
 

@@ -72,14 +72,14 @@ class AvoidDeath : public BehaviourTree::Node{
 		nodename = name;
 		}
 	private:
-	 virtual bool run(Leg &l) override;
+	 virtual bool run(Leg &l);
 };
 
 //安全度评估
-class RiskAsses : public BehaviourTree::Node{
+class RiskAssess : public BehaviourTree::Node{
 public :
 	string nodename;
-	RiskAsses(string name = "")
+	RiskAssess(string name = "")
 		{
 		nodename = name;
 		}

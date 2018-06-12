@@ -12,14 +12,14 @@ public:
 		virtual bool run(Leg &leg)=0;
 	};
 
-	class ComposeiteNode : public Node {
+	class CompositeNode : public Node {
 	private:
 		std::vector<Node*> children;
 	public:
 		const  std::vector<Node *> & getChildren() const { return  children;}
 		void addChild(Node *child) {children.push_back(child);child->boss = this->boss;}
 	};
-	class Selector : public ComposeiteNode{
+	class Selector : public CompositeNode{
 	public:
 		virtual bool  run(Leg & leg) override {
 			std::vector<Node*>::const_iterator iter;
@@ -32,7 +32,7 @@ public:
 		}
 	};
 
-	class RandomSelector : public ComposeiteNode {
+	class RandomSelector : public CompositeNode {
 	public:
 		virtual bool run(Leg &leg) override {
             std::vector<Node *> temp = getChildren();
@@ -47,7 +47,7 @@ public:
 		}
 	};
 
-	class Sequence :public ComposeiteNode {
+	class Sequence :public CompositeNode {
 	public:
 		virtual bool run (Leg &leg)override {
 			std::vector<Node*>::const_iterator iter;
@@ -59,7 +59,7 @@ public:
 		}
 	};
 
-	class Parallel :public ComposeiteNode {
+	class Parallel :public CompositeNode {
 	public:
 		virtual bool  run(Leg &leg) override {
 			std::vector<Node*>::const_iterator iter;
@@ -78,8 +78,10 @@ public:
 		Node *getChild() const { return child;}
 
 	public:
-		void setChild(Node *newChild) {child = newChild; child->boss = this->boss;}
-
+		void setChild(Node *newChild) {
+			child = newChild; 
+			child->boss = this->boss;
+			}
 	};
 
 	class Root :public DecoratorNode {
@@ -119,7 +121,7 @@ public:
 				while (true)
 					getChild()->run(leg);
 			else{
-				for (int i =0; i <= numRepeats - 1; i++)
+				for (int i =0; i < numRepeats - 1; i++)
 					getChild()->run(leg);
 				return getChild()->run(leg);
 			}

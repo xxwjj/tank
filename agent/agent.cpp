@@ -15,7 +15,7 @@ void Agent::Registation(int team_id)
 {
     leg._team_id = team_id;
     RegMessage regs(team_id, "everest");
-    string output = regs.tostring();
+    string output = regs.toString();
     CONNECTOR->send(output);
 }
 
@@ -219,7 +219,7 @@ void Agent::SendActions()
 #endif
 
     ActionMessage msg(leg,_action_list);
-    CONNECTOR->send(msg.tostring());
+    CONNECTOR->send(msg.toString());
 }
 
 void Agent::KillWorkingThread()

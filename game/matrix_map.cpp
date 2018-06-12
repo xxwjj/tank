@@ -2,7 +2,7 @@
 #include <cassert>
 #include "constants.h"
 #include <iomanip>
-#include "define.h"
+#include "debug.h"
 
 using namespace std;
 
@@ -38,7 +38,7 @@ void MatrixMap::clearVolatileTerrain() {
 }
 
 
-void MatrixMap::clearVolatileTerrain() {
+void MatrixMap::clearVolatileTerrain(E_CELL type) {
     for(int i=0 ; i<_height*_width; i++)
     {
         if ((_cells+i)->_type == type)
@@ -48,7 +48,7 @@ void MatrixMap::clearVolatileTerrain() {
     }
 }
 
-void MatrixMap::clearDeleteTerrain() {
+void MatrixMap::clearDeletedTerrain() {
     for(int i=0 ; i<_height*_width; i++)
     {
         if ((_cells+i)->_deleted == true)
@@ -59,23 +59,24 @@ void MatrixMap::clearDeleteTerrain() {
     }
 }
 
-void MatrixMap::clone(MattrixMap &newMap) {
+void MatrixMap::clone(MatrixMap &newMap) {
     newMap.m_free();
     newMap._width = _width;
     newMap._height = _height;
     newMap._cells = new Cell[_width*_height];
     assert(newMap._cells != NULL);
     memcpy(newMap._cells, _cells, sizeof(Cell)*_width*_height);
-    newMap._starVec.assgin(_starVec.begin(), _diamondVec.end());
+    newMap._starVec.assign(_starVec.begin(), _starVec.end());
+	newMap._diamondVec.assign(_diamondVec.begin(),_diamondVec.end());
 }
 
-int MatrixMap::getTerrainNumINDistance(Vector2D &ops, E_CELL type) {
+int MatrixMap::getTerrainNumInDistance(Vector2D &pos, E_CELL type) {
     int cnt = 0;
     for (int i = pos.col - 2; i<= pos.col +2; i++)
     {
         for (int j = pos.row-2; j<=pos.row+2; j++)
         {
-            if (!isValideCoord(j,j)){
+            if (!isValidCoord(i,j)){
                 continue;
             }
             if (getTerrain(i,j) == type && (abs(pos.col -i) + abs(pos.row-j) <= 2)){
@@ -111,7 +112,7 @@ int MatrixMap::getNearestTerrainDistance(Vector2D &pos, Vector2D &dir, E_CELL ty
 }
 
 
-int MatrixMap::getTerrainNumInVision(Vector2D &ops, E_CELL type) {
+int MatrixMap::getTerrainNumInVision(Vector2D &pos, E_CELL type) {
     int num = 0;
     num += getTerrainNumInVision(pos,VECTOR_UP, E_FOE);
     num += getTerrainNumInVision(pos, VECTOR_DOWN, E_FOE);
@@ -128,41 +129,41 @@ int MatrixMap::getPlayerNumInOneStep(Vector2D &pos)
 {
     int num =0;
     E_CELL type = E_FLAT;
-    type = (T_CELL)getTerrain(pos + VECTOR_UP);
+    type = (E_CELL)getTerrain(pos + VECTOR_UP);
     if (type = E_FOE || type == E_FRIEND)
     {
         num++;
     }
-    type = (T_CELL)getTerrain(pos + VECTOR_DOWN);
+    type = (E_CELL)getTerrain(pos + VECTOR_DOWN);
     if (type = E_FOE || type == E_FRIEND)
     {
         num++;
     }
-    type = (T_CELL)getTerrain(pos + VECTOR_LEFT);
+    type = (E_CELL)getTerrain(pos + VECTOR_LEFT);
     if (type = E_FOE || type == E_FRIEND)
     {
         num++;
     }
-    type = (T_CELL)getTerrain(pos + VECTOR_RIGHT);
+    type = (E_CELL)getTerrain(pos + VECTOR_RIGHT);
     if (type = E_FOE || type == E_FRIEND)
     {
         num++;
     }
-    type = (T_CELL)getTerrain(pos + VECTOR_ZERO);
-    if (type = E_FOE || type == E_FRIEND)
+    type = (E_CELL)getTerrain(pos + VECTOR_ZERO);
+    if (type == E_FOE || type == E_FRIEND)
     {
         num++;
     }
     return num ;
 }
 
-int MatrixMap::getTerrainNumInVision(Vector2D &ops, Vector2D &dir, E_CELL type)
+int MatrixMap::getTerrainNumInVision(Vector2D &pos, Vector2D &dir, E_CELL type)
 {
     int dist = 0;
     int num = 0;
-    Vector2D = tmp = pos;
+    Vector2D tmp = pos;
     tmp += dir; dist++;
-    Cell * pCell = getCell($tmp);
+    Cell * pCell = getCell(&tmp);
     while (NULL != pCell && dist <= 6)
     {
         if (pCell->_type == type) {
@@ -180,10 +181,11 @@ int MatrixMap::getTerrainNumInVision(Vector2D &ops, Vector2D &dir, E_CELL type)
 
 bool MatrixMap::Load(const char *FileName)
 {
-    std::ifstream in(FeilName);
+    std::ifstream in(FileName);
     if (!in)
     {
         throw  std::runtime_error("Cannot open file: " + std::string(FileName));
+		return false;
     }
     return Load(in);
 }
@@ -196,7 +198,7 @@ bool MatrixMap::Load(std::ifstream &stream) {
 
     for (int i = 0; i<nRow; i++)
     {
-        for (int j=0; j <nCol; i++)
+        for (int j=0; j <nCol; j++)
         {
             stream >> val;
             for (int e = 0; e < E_DIAMOND; e++)
@@ -209,7 +211,7 @@ bool MatrixMap::Load(std::ifstream &stream) {
             {
                 _diamondVec.push_back(Vector2D(j,i));
             }
-            if (val & (1<E_STAR))
+            if (val & (1 << E_STAR))
             {
                 _starVec.push_back(Vector2D(j,i));
             }
@@ -224,6 +226,7 @@ bool MatrixMap::Save(const char * FileName)
     if (!out)
     {
         throw std::runtime_error("Cannot open file: " + std::string(FileName));
+		return false;
     }
     return Save(out);
 }
@@ -245,7 +248,7 @@ bool MatrixMap::Save(std::ofstream &stream) {
         }
     }
 
-    for (std::vector<Vector2D>::iterator it = _starVec.begin(); it != _starVec::end(); it++)
+    for (std::vector<Vector2D>::iterator it = _starVec.begin(); it != _starVec.end(); it++)
     {
         if (1 == cellMap[coord2index(it->col, it->row)]){
             cellMap[coord2index(it->col, it->row)] = 0;
@@ -253,7 +256,7 @@ bool MatrixMap::Save(std::ofstream &stream) {
         cellMap[coord2index(it->col, it->row)] += (1 << E_STAR);
     }
 
-    for (std::vector<Vector2D>::iterator it = _diamondVec.begin(); it != _diamondVec::end(); it++)
+    for (std::vector<Vector2D>::iterator it = _diamondVec.begin(); it != _diamondVec.end(); it++)
     {
         if (1 == cellMap[coord2index(it->col, it->row)]){
             cellMap[coord2index(it->col, it->row)] = 0;
@@ -261,11 +264,11 @@ bool MatrixMap::Save(std::ofstream &stream) {
         cellMap[coord2index(it->col, it->row)] += (1 << E_DIAMOND);
     }
 
-    for(int i=0; i < nRown; i++)
+    for(int i=0; i < nRow; i++)
     {
         for (int j=0; j < nCol; j++)
         {
-            stream << setw(8) << cellMap[coordindex(j,i)];
+            stream << setw(8) << cellMap[coord2index(j,i)];
         }
         stream << std::endl;
     }

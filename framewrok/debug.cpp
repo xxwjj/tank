@@ -10,13 +10,18 @@
 
 #define MAX_LOG_LEN (10000)
 
-static FILE * filehandle = NULL;
+static FILE * fileHandle = NULL;
 static char logBuffer[MAX_LOG_LEN] = {0};
-
 
 void initLogModule()
 {
-    fileHandle = fopen(LOG_FILE, "w+")
+    fileHandle = fopen(LOG_FILE, "w+");
+}
+
+void exitLogModule()
+{
+	fclose(fileHandle);
+	fileHandle = NULL;
 }
 
 void log(const char * fmt, ...){
@@ -28,26 +33,38 @@ void log(const char * fmt, ...){
 	fprintf(fileHandle, "%s", logBuffer);
 	fflush(fileHandle);
 }
-#dneif
+#else
+void initLogModule()
+{
+}
 
-unsigned long long GetMicroSet()
+void exitLogModule()
+{
+}
+
+void log(const char * fmt, ...){
+}	
+#endif
+
+
+unsigned long long GetMicroSec()
 {
 	static long long fq = 0;
-	if (0 = fq)
+	if (0 == fq)
 	{
 		QueryPerfomanceFrequency((LARGE_INTEGER *) &fq);
 	}
 	long long counter;
-	QueryPerfomanceFrequency((LARGE_INTEGER *) &counter);
+	QueryPerformanceCounter((LARGE_INTEGER *) &counter);
 	return counter * 1000000 /fq;
 	
 }
 
-void buildLegInfoFromMatrixMap(MatirMap & matrix, Leg &leg)
+void buildLegInfoFromMatrixMap(MatrixMap & matrix, Leg &leg)
 {
 	int col, row;
 	Player player;
-	int plyaerId = 0;
+	int playerId = 0;
 	
 	for (int i=0; i < matrix._height * matrix._width; i++)
 	{
@@ -62,13 +79,22 @@ void buildLegInfoFromMatrixMap(MatirMap & matrix, Leg &leg)
 			    leg._map_info._walls.push_back(Wall(col, row));
 			    break;
 		    case E_BRICK:
-		        leg._map_info._rivers.push_back(River(col, row));
+		        leg._map_info._bricks.push_back(Brick(col, row));
+				break;
+			case E_RIVER:
+				leg._map_info._rivers.push_back(River(col,row));
 		    case E_FOE:
 		        player._pos.Set(col, row);
 		        player._id = playerId++;
 		        player._alive = true;
-		        leg._map_info.freend_players.push_back(plyaer);
+		        leg._map_info._enemy_players.push_back(player);
 		        break;
+			case E_FRIEND:
+				player._pos.Set(col,row);
+				player._id = playerId++;
+				player._alive = true;
+				leg._map_info._friend_players.push_back(player);
+				break;		
 		}
 	}
 	for (size_t i=0; i<matrix._diamondVec.size();i++)
@@ -78,7 +104,7 @@ void buildLegInfoFromMatrixMap(MatirMap & matrix, Leg &leg)
 
     for (size_t i=0; i<matrix._starVec.size(); i++)
     {
-        leg._map_info._diamonds.push_back(Diamon(matrix._starVec[i].col, matrix._starVec[i].row));
+        leg._map_info._diamonds.push_back(Diamond(matrix._starVec[i].col, matrix._starVec[i].row));
     }
     return ;
 }

@@ -21,9 +21,9 @@ class SiegeGraph : public DenseGraph<Cell>
 
 typedef Graph_SearchAStar<SiegeGraph, Heuristic_Manhattan> SiegeGraphAStar;
 
-void PriAction(Player*player, Vector2D dir, PRIOPITY_BETTER_MOVE pri)
+void PriAction(Player*player, Vector2D dir, PRIORITY_BETTER_MOVE pri)
 {
-	for(ActionVecIt iter = player=>actionList.begin(); iter != player->actionList.end(); iter++)
+	for(ActionVecIt iter = player->actionList.begin(); iter != player->actionList.end(); iter++)
 	{
 		if(iter->disable)
 			continue;
@@ -34,9 +34,9 @@ void PriAction(Player*player, Vector2D dir, PRIOPITY_BETTER_MOVE pri)
 	}
 }
 
-void PriFireAction(Player*player,Vector2D dir,PRIOPITY_BETTER_MOVE pri)
+void PriFireAction(Player*player,Vector2D dir,PRIORITY_BETTER_MOVE pri)
 {
-	for(ActionVecIt iter = player=>actionList.begin(); iter != player->actionList.end(); iter++)
+	for(ActionVecIt iter = player->actionList.begin(); iter != player->actionList.end(); iter++)
 	{
 		if(iter->disable)
 			continue;
@@ -50,7 +50,7 @@ void PriFireAction(Player*player,Vector2D dir,PRIOPITY_BETTER_MOVE pri)
 bool ChooseBetterMove(map<Vector2D,int>&cost_map,set<Vector2D>&better_dir)
 {
 	better_dir.clear();
-	if(const_map.size() <= 1)
+	if(cost_map.size() <= 1)
 	   return false;
     int min_dist = cost_map.begin()->second;
 	for(map<Vector2D,int>::iterator iter = cost_map.begin(); iter!= cost_map.end();iter++)
@@ -175,18 +175,10 @@ void GetNearestFoe(Leg &leg,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>>>&
 		player->_nearest_foe = leg._map_info._enemy_players.end();
 		player->_nearest_foe_dist = leg._map_info._max_distance;
 		int min_dist = leg._map_info._max_distance;
-		for(map<PlayerVecIt,map<Vector2D,int>>::iterator foe_dist_iter = foe_dist_map.begin();foe_dist_iter != foe_dist_map();foe_dist_iter++)
-		{
-			if(!player->_alive)
-				continue;
 			
-			map<PlayerVecIt,map<Vector2D,int>> &foe_dist_map = dist_map[player];
-			player->_nearest_foe = leg._map_info._enemy_players.end();
-			player->_nearest_foe_dist = leg._map_info._max_distance;
-			int min_dist = leg._map_info._max_distance;
-			for(map<PlayerVecIt,map<Vector2D,int>>::iterator foe_dist_iter = foe_dist_map.begin();foe_dist_iter != foe_dist_map.end();foe_dist_iter++)
+     	for(map<PlayerVecIt,map<Vector2D,int>>::iterator foe_dist_iter = foe_dist_map.begin();foe_dist_iter != foe_dist_map.end();foe_dist_iter++)
 			{
-				if(foe_dist_iter->second[Vector2D] < min_dist)
+				if(foe_dist_iter->second[VECTOR_ZERO] < min_dist)
 				{
 					min_dist = foe_dist_iter->second[VECTOR_ZERO];
 					player->_nearest_foe = foe_dist_iter->first;
@@ -230,8 +222,9 @@ void GetNearestFoe(Leg &leg,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>>>&
 			//如果已在攻击范围内 不再追
 		if(dist_map[iter][iter->_nearest_foe][*move_iter] <= 2 && (iter->_nearest_foe->_pos.row == iter->_pos.row || iter->_nearest_foe->_pos.col == iter->_pos.col))	
 			continue;
-			PriAction(&(*iter)),*move_iter,E_GO_FOR_ENEMY);
+			PriAction(&(*iter),*move_iter,E_GO_FOR_ENEMY);
 			iter->_target_choosed = true;
+			log("\tPlayer %d, supperbullet, move (%2d,%2d) for enemy.\n",iter->_id, move_iter->col, move_iter->row);
 		}
 		}
 	}
@@ -313,7 +306,7 @@ void GetNearestFoe(Leg &leg,map<PlayerVecIt,map<PlayerVecIt,map<Vector2D,int>>>&
 				continue;
 			Vector2D pos = player->_pos + *move_iter;
 			int dist = astar.GetCostToPos(leg._matrix_map.coord2index(pos.col,pos.row));
-			const_map[*move_iter] = dist == -1 ?MAX_DIST :dist;
+			cost_map[*move_iter] = dist == -1 ?MAX_DIST :dist;
 		}
 		set<Vector2D> better_move;
 		if(!ChooseBetterMove(cost_map,better_move))

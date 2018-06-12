@@ -20,7 +20,7 @@ class TickBullet
     Vector2D _foeBulletDir[MaxMapWidth][MaxMapHeight][MAX_TICK_NUM];//记录每个时刻的敌方子弹方向
 	
 public:
- TickBullet(int col,int row){_width = col; _height = row;}
+ TickBullet(int col,int row){_width = col, _height = row;}
  void m_alloc(int col,int row){reset(), _width = col, _height = row;}
  void reset()
  {

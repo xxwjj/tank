@@ -12,14 +12,14 @@ enum PRIORITY_ESCAPE
 		E_EVENT,
 		E_WARNING,
 		E_ERROR,
-		E_EMERGE	
+		E_EMERG	
 };
 
 enum PRIORITY_DIAMON
 {
 NOT_FORWARD_DIAMON,
 	KEEP_FORWARD_DIAMOND,
-	FORWAR_DIAMON
+	FORWARD_DIAMON
 };
 
 enum PRIORITY_DEAD_END
@@ -69,7 +69,7 @@ class ActionVec:public std::vector<Action>
 			
 		}
 
-		int GetActionCout()
+		int GetActionCount()
 			{
 			int count = 0;
 			for (ActionVecIt iter = begin(); iter != end(); iter ++)
@@ -114,27 +114,27 @@ class ActionVec:public std::vector<Action>
 			push_back(Action(player_id, VECTOR_UP, VECTOR_DOWN,true));
 			push_back(Action(player_id, VECTOR_UP, VECTOR_LEFT,true));
 			push_back(Action(player_id, VECTOR_UP, VECTOR_RIGHT,true));
-			push_back(Action(player_id, VECTOR_UP, VECTOR_ZERO,true));
+			//push_back(Action(player_id, VECTOR_UP, VECTOR_ZERO,true));
 			push_back(Action(player_id, VECTOR_DOWN, VECTOR_UP,true));
 			push_back(Action(player_id, VECTOR_DOWN, VECTOR_DOWN,true));
 			push_back(Action(player_id, VECTOR_DOWN, VECTOR_LEFT,true));
 			push_back(Action(player_id, VECTOR_DOWN, VECTOR_RIGHT,true));
-			push_back(Action(player_id, VECTOR_DOWN, VECTOR_ZERO,true));
+			//push_back(Action(player_id, VECTOR_DOWN, VECTOR_ZERO,true));
 			push_back(Action(player_id, VECTOR_LEFT, VECTOR_UP,true));
 			push_back(Action(player_id, VECTOR_LEFT, VECTOR_DOWN,true));
 			push_back(Action(player_id, VECTOR_LEFT, VECTOR_LEFT,true));
 			push_back(Action(player_id, VECTOR_LEFT, VECTOR_RIGHT,true));
-			push_back(Action(player_id, VECTOR_LEFT, VECTOR_ZERO,true));
+			//push_back(Action(player_id, VECTOR_LEFT, VECTOR_ZERO,true));
 			push_back(Action(player_id, VECTOR_RIGHT, VECTOR_UP,true));
 			push_back(Action(player_id, VECTOR_RIGHT, VECTOR_DOWN,true));
 			push_back(Action(player_id, VECTOR_RIGHT, VECTOR_LEFT,true));
 			push_back(Action(player_id, VECTOR_RIGHT, VECTOR_RIGHT,true));
-			push_back(Action(player_id, VECTOR_RIGHT, VECTOR_ZERO,true));
+			//push_back(Action(player_id, VECTOR_RIGHT, VECTOR_ZERO,true));
 			push_back(Action(player_id, VECTOR_ZERO, VECTOR_UP,true));
 			push_back(Action(player_id, VECTOR_ZERO, VECTOR_DOWN,true));
 			push_back(Action(player_id, VECTOR_ZERO, VECTOR_LEFT,true));
 			push_back(Action(player_id, VECTOR_ZERO, VECTOR_RIGHT,true));
-			push_back(Action(player_id, VECTOR_ZERO, VECTOR_ZERO,true));
+			//push_back(Action(player_id, VECTOR_ZERO, VECTOR_ZERO,true));
 			
 		}
 			

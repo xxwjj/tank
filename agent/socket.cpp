@@ -24,7 +24,7 @@ void Socket::init(unsigned long server, unsigned short port)
 	
 	addr_srv.sin_addr.s_addr = _server;
 	addr_srv.sin_family =AF_INET;
-	addr_srv.sin_port = htnos(_port);
+	addr_srv.sin_port = htons(_port);
 }
 
 void Socket::connect()
@@ -111,7 +111,7 @@ int Socket::send(string buf)
 
 Socket::~Socket()
 {
-	shutdonw(sock,SD_BOTH);
+	shutdown(sock,SD_BOTH);
 	closesocket(sock);
 	WSACleanup();
 }

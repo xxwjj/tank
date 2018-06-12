@@ -10,6 +10,6 @@ void log(const char*fmt, ...);
 void initLogModule();
 void exitLogModule();
 
-unsigned long long getMicroSec();
+unsigned long long GetMicroSec();
 
-void buildLegInfoFromMatirxMap(MatrixMap &matrix, Leg &leg);
+void buildLegInfoFromMatrixMap(MatrixMap &matrix, Leg &leg);

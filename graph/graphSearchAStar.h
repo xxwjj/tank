@@ -22,12 +22,12 @@ private:
     const graph_type&              m_Graph;
 
     //indexed into my node. Contains the 'real' accumulative cost to that node
-    std::vector<double>             m_GCosts;
+    std::vector<int>             m_GCosts;
 
     //indexed into by node. Contains the cost from adding m_GCosts[n] to
     //the heuristic cost from n to the target node. This is the vector the
     //iPQ indexes into.
-    std::vector<double>             m_FCosts;
+    std::vector<int>             m_FCosts;
 
     std::vector<int>       m_ShortestPathTree;
     std::vector<int>       m_SearchFrontier;
@@ -43,10 +43,10 @@ public:
     Graph_SearchAStar(graph_type &graph,
                       int   source,
                       int   target):m_Graph(graph),
-                                    m_ShortestPathTree(graph.NumNodes(), INVALIDE_NID),
-                                    m_SearchFrontier(graph.NumNodes(),INVALIDE_NID),
-                                    m_GCosts(graph.NumNodes(), INVALIDE_COST),
-                                    m_FCosts(graph.NumNodes(), INVALIDE_COST),
+                                    m_ShortestPathTree(graph.NumNodes(), INVALID_NID),
+                                    m_SearchFrontier(graph.NumNodes(),INVALID_NID),
+                                    m_GCosts(graph.NumNodes(), INVALID_COST),
+                                    m_FCosts(graph.NumNodes(), INVALID_COST),
                                     m_iSource(source),
                                     m_iTarget(target)
     {
@@ -56,15 +56,15 @@ public:
     //returns the vector of edges that the algorithm has examined
     std::vector<const int> GetSPT()const{return m_ShortestPathTree;}
 
-    std::list<list> GetPathToPos(int pos, const char * posName = "position") const;
+    std::list<int> GetPathToPos(int pos, const char * posName = "position") const;
 
     //returns a vector of node indexes that comprise the shortest path
     //from the source to the target
-    std::list<int> GetPathToTarget()const {return GetPathToPos(m_iTarget, "target")};
+    std::list<int> GetPathToTarget()const {return GetPathToPos(m_iTarget, "target");};
 
     int GetCostToPos(int pos, const char * posName = "position") const;
     //returns the total cost to the target
-    double GetCostToTarget()const{return GetCostToPos(m_iTarget);}
+    int GetCostToTarget()const{return GetCostToPos(m_iTarget);}
 };
 
 //-----------------------------------------------------------------------------
@@ -92,12 +92,12 @@ void Graph_SearchAStar<graph_type, heuristic>::Search()
         if (NextClosestNode == m_iTarget) return;
 
         //now to test all the edges attached to this node
-        Direction nbDire = getNeighbourDirection(DIRECTRION_NUM);
+        Direction *nbDire = getNeighbourDirection(DIRECTION_NUM);
 
         for (int i=0; i<DIRECTION_NUM; i++)
         {
-           int neighbour = m_Graph.GetNodeNbId(NextClosestNode, nbDire);
-           if (INVALIDE_NID == neighbour || neighbour == m_iSource)
+           int neighbour = m_Graph.GetNodeNbId(NextClosestNode, nbDire[i]);
+           if (INVALID_NID == neighbour || neighbour == m_iSource)
            {
                continue;
            }
@@ -108,14 +108,14 @@ void Graph_SearchAStar<graph_type, heuristic>::Search()
            }
            int HCost = heuristic::Calculate(m_Graph, m_iTarget, neighbour);
            int GCost = m_GCosts[NextClosestNode] + heuristic::Calculate(m_Graph, NextClosestNode, neighbour);
-           if (INVALIDE_NID == m_SearchFrontier[neighbour])
+           if (INVALID_NID == m_SearchFrontier[neighbour])
            {
                m_FCosts[neighbour] = GCost + HCost;
                m_GCosts[neighbour] = GCost;
                pq.push(neighbour);
                m_SearchFrontier[neighbour] = NextClosestNode;
            }
-           else if ((GCost <m_GCosts[neighbour]) && (INVALIDE_NID) == m_ShortestPathTree[neighbour])
+           else if ((GCost <m_GCosts[neighbour]) && (INVALID_NID) == m_ShortestPathTree[neighbour]))
            {
                m_FCosts[neighbour] = GCost + HCost;
                m_GCosts[neighbour] = GCost;
@@ -128,12 +128,12 @@ void Graph_SearchAStar<graph_type, heuristic>::Search()
 
 //-----------------------------------------------------------------------------
 template <class graph_type, class heuristic>
-std::list<int> Graph_SearchAStar<graph_type, heuristic>::GetPathToTarget()const
+std::list<int> Graph_SearchAStar<graph_type, heuristic>::GetPathToPos(int pos,const char* posName="position")const
 {
     std::list<int> path;
 
     //just return an empty path if no target or no path found
-    if (m_iTarget < 0 && pos != m_iTarget)  return path;
+    if (m_iTarget >= 0 && pos != m_iTarget)  return path;
 
     if (pos < 0|| pos >= m_Graph.NumNodes()) return path;
 
@@ -143,7 +143,7 @@ std::list<int> Graph_SearchAStar<graph_type, heuristic>::GetPathToTarget()const
 
     path.push_front(nd);
 
-    while ((nd != m_iSource) && (m_ShortestPathTree[nd] != INVALIDE_NID))
+    while ((nd != m_iSource) && (m_ShortestPathTree[nd] != INVALID_NID))
     {
         nd = m_ShortestPathTree[nd];
 
@@ -158,16 +158,16 @@ template <class graph_type, class heuristic>
 int Graph_SearchAStar<graph_type, heuristic>::GetCostToPos(int pos, const char * posName = "position") const
 {
     if (m_iTarget >= 0 && pos != m_iTarget) {
-        return INVALIDE_COST;
+        return INVALID_COST;
     }
 
     if (pos < 0 || pos >= m_Graph.NumNodes())
     {
-        return INVALIDE_COST;
+        return INVALID_COST;
     }
-    if (INVALIDE_NID == M_ShortestPathTree[pos] && pos != m_iSource)
+    if (INVALIDE_NID == m_ShortestPathTree[pos] && pos != m_iSource)
     {
-        return INVALIDE_CONST;
+        return INVALID_COST;
     }
-    return m_GCOSTS[pos];
+    return m_GCosts[pos];
 }

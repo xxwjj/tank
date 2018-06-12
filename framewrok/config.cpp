@@ -8,7 +8,7 @@ const std::string CONFIG_FILE = "game_config.ini";
 
 Config g_config;
 
-void InitConfig_file()
+void InitConfig_File()
 {
     try {
         g_config.ReadFile(CONFIG_FILE);
@@ -25,18 +25,18 @@ void SetDefault()
     const char * default_value[][2] =
             {
                     {
-                        "round_timeout", "3000"
+                        "round_timeout", "300"
                     }
             };
     int item_count = sizeof(default_value)/ sizeof(default_value[0]);
     for(int i =0; i<item_count; i++)
     {
-        g_config.Add(string(default_value[i][0]), string_as_T(default_value[i][1]));
+        g_config.Add(string(default_value[i][0]), string(default_value[i][0]));
     }
 }
 
 Config::Config(std::string filename, std::string delimiter, std::string comment) : m_Delimiter(delimiter), m_Comment(comment){
-    std::ifstream in(file.c_str());
+    std::ifstream in(filename.c_str());
     if (!in) throw  File_not_found(filename);
     in >> (*this);
 }
@@ -45,26 +45,26 @@ Config::Config() :m_Delimiter(string(1,'=')), m_Comment(string(1,'#')){
 
 }
 
-bool Config::KeyExists(std::string &in_key) const
+bool Config::KeyExists(cosnt std::string &key) const
 {
     mapci p = m_Contents.find(key);
-    return (p != m_Comment.end());
+    return (p != m_Contents.end());
 
 }
 
 void Config::Trim(string & inout_s)
 {
-    static const char witespace = " \n\t\v\r\f";
-    inout_s.erase(0, inout_s.find_first_not_of(witespace));
-    inout_s.erase(inout_s.find_last_not_of(witespace) + 1U);
+    static const char whitespace[] = " \n\t\v\r\f";
+    inout_s.erase(0, inout_s.find_first_not_of(whitespace));
+    inout_s.erase(inout_s.find_last_not_of(whitespace) + 1U);
 }
 
 std::ostream& operator << (std::ostream & os, const Config & cf)
 {
     for (Config::mapci p = cf.m_Contents.begin() ;p != cf.m_Contents.end(); ++p)
     {
-        os << p->frist << " " << cf.m_Delimiter << " ";
-        os << p->second << std::ednl;
+        os << p->first << " " << cf.m_Delimiter << " ";
+        os << p->second << std::endl;
     }
     return os;
 }
@@ -86,7 +86,7 @@ std::istream & operator >> (std::istream & is, Config& cf)
     while (is || nextline.length() > 0)
     {
         string line;
-        if (nextline.length > 0)
+        if (nextline.length() > 0)
         {
             line = nextline;
             nextline = "";
@@ -127,7 +127,7 @@ std::istream & operator >> (std::istream & is, Config& cf)
             }
             Config::Trim(key);
             Config::Trim(line);
-            cf.m_Comment[key] = line;
+            cf.m_Contents[key] = line;
         }
     }
     return is;
@@ -139,7 +139,7 @@ bool Config::FileExist(std::string filename) {
     std::ifstream in(filename.c_str());
     if(in)
         exist = true;
-    return exist
+    return exist;
 }
 
 void Config::ReadFile(std::string filename, std::string delimiter, std::string comment) {
@@ -149,5 +149,5 @@ void Config::ReadFile(std::string filename, std::string delimiter, std::string c
 
     if(!in) throw File_not_found(filename);
 
-    in >> (*this)
+    in >> (*this);
 }

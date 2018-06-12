@@ -8,7 +8,7 @@ int Leg::getSuperPlayerNum(Vector2D &pos) {
     for (int i = pos.col -2; i<= pos.col +2; i++) {
         for (int j = pos.row - 2; j <= pos.row + 2; j++)
         {
-            if (!_matirx_map.isValidCoord(i,j))
+            if (!_matrix_map.isValidCoord(i,j))
             {
                 continue;
             }
@@ -38,20 +38,20 @@ int Leg::getNearestBulletDistance(Vector2D &pos, Vector2D &dir, E_BULLET type)
     while (NULL != pCell)
     {
         distance++;
-        if (pCell->_bullet = type)
+        if (pCell->_bullet == type)
         {
             if (_map_info.findOppositeBulletAtPos(nextPos, dir, type))
             {
                 return distance;
             }
-            if (pCell->_type == E_WALL || pCell->type == E_BRICK)
-            {
-                break;
-            }
-            nextPos += dir;
-            pCell = _matrix_map.getCell(&nextPos);
-        }
-    }
+		}
+		if (pCell->_type == E_WALL || pCell->_type == E_BRICK)
+		{
+			break;
+		}
+		nextPos += dir;
+		pCell = _matrix_map.getCell(&nextPos);
+   }
     return 0;
 }
 
@@ -59,7 +59,7 @@ bool Leg::haveSuperBulletInDir(Vector2D &pos, Vector2D &dir, E_BULLET type, int 
     Vector2D nextPos = pos;
     nextPos += dir;
     int distance = 0;
-    Cell *pCell =_matrix_map.getCell(nextPos);
+    Cell *pCell =_matrix_map.getCell(&nextPos);
     while (NULL != pCell && distance < dis)
     {
         distance++;
@@ -69,7 +69,7 @@ bool Leg::haveSuperBulletInDir(Vector2D &pos, Vector2D &dir, E_BULLET type, int 
                 return true;
             }
         }
-        if (pCell->type == E_WALL || pCell->_type == E_BRICK)
+        if (pCell->_type == E_WALL || pCell->_type == E_BRICK)
         {// yu dao chang ai , bu ji xu zha xun
             break;
         }
@@ -97,7 +97,7 @@ int Leg::haveBulletNumInDir(Vector2D &pos, Vector2D &dir, E_BULLET type, int dis
                 continue;
             }
         }
-        if (pCell->type == E_WALL || pCell->_type == E_BRICK)
+        if (pCell->_type == E_WALL || pCell->_type == E_BRICK)
         {// yu dao chang ai , bu ji xu zha xun
             break;
         }

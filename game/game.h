@@ -32,23 +32,34 @@ public:
 
     int _foeDistance;
     Vector2D _foeDir;
+	
+	int _foeBulletDistance;
+	Vector2D _foeBulletDir;
 
     int _totalEnemyNum[MAX_VEC_DIR_NUM];
     int _totalFriendNum[MAX_VEC_DIR_NUM];
     std::vector<Player>::iterator _nearest_foe;
-    int _nearest_foe_dist;
+    int _nearest_foe_dist
+	
+	set<Vector2D> _move_to_nearest_foe;
+	bool _target_choosed;
+	
     std::set<Vector2D> moveList;
     std::set<Vector2D> fireList;
     ActionVec actionList;
-    EventList eventList;
+    EventList event_list
+	
     void MaintainList()
     {
         moveList.clear();
         fireList.clear();
         for (ActionVecIt iter = actionList.begin(); iter != actionList.end(); iter++)
         {
-            moveList.insert(iter->move);
-            fireList.insert(iter->fire);
+			if(!iter->disable)
+			{
+              moveList.insert(iter->move);
+              fireList.insert(iter->fire);
+			}
         }
     }
     void GenerateActionList()
@@ -58,20 +69,21 @@ public:
 
     void ResetActionList()
     {
-        actionList.Reset();
-        moveList.insert(VECTOR_DOWN);
+        actionList.Reset(_have_super_bullet);
+        moveList.insert(VECTOR_UP);
+		moveList.insert(VECTOR_DOWN);
         moveList.insert(VECTOR_LEFT);
         moveList.insert(VECTOR_RIGHT);
         moveList.insert(VECTOR_ZERO);
+        fireList.insert(VECTOR_UP);
         fireList.insert(VECTOR_DOWN);
         fireList.insert(VECTOR_LEFT);
         fireList.insert(VECTOR_RIGHT);
-        fireList.insert(VECTOR_ZERO);
     }
 
     Player() :_id(0),_team(0),_pos(0,0), _alive(false), _foeDistance(MaxMapDistance), _dangerousDir(0,0)
     {
-        actionList.reseve(MAX_DIR_NUM * MAX_DIR_NUM * 2);
+        actionList.reserve(MAX_DIR_NUM * MAX_DIR_NUM * 2);
         _born_pos = VECTOR_LEFT;
 
     }
@@ -111,6 +123,7 @@ typedef  std::vector<Star>::iterator StarVecIt;
 
 class Bullet
 {
+public:
     Vector2D _pos;
     Vector2D _direction;
 
@@ -217,8 +230,8 @@ public:
             {
                 return iter;
             }
-            return _enemy_players.end();
         }
+		return _enemy_players.end();
     }
 
     bool findOppositeBulletAtPos(Vector2D &pos, Vector2D &dir,E_BULLET type);
@@ -240,7 +253,7 @@ public:
         _foeBullets.clear();
         _height = 0;
         _width = 0;
-    }
+    };
 };
 
 class Team
@@ -322,7 +335,7 @@ public:
     void LeaveActionSection()
     {
 #ifdef MULTI_THREAD_ROUND
-        LeaveCriticalSetction(&action_section);
+        LeaveCriticalSection(&action_section);
 #endif
     }
     bool _action_getted;

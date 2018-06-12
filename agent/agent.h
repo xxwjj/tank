@@ -1,7 +1,7 @@
 #include <vector>
 #include <string>
 #include "json/json.h"
-#include <define.h>
+#include "define.h"
 #include "game.h"
 #include "ai.h"
 #include "thread.h"
@@ -52,7 +52,7 @@ class Agent
 	int ProcessMsg(char*buf,int size);
 	string GetMsg(Json::Value &value);
 	void ProcessLegStart(Json::Value &value);
-	void RrocessRound(Json::Value &value);
+	void ProcessRound(Json::Value &value);
 	void KillWorkingThread();
 	void WaitLastWorkingThreadEnd();
 	

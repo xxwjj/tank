@@ -7,7 +7,7 @@
 #include <cassert>
 #include <string>
 #include <iostream>
-#include <fStream>
+#include <fstream>
 #include <vector>
 
 typedef enum{
@@ -77,18 +77,18 @@ class MatrixMap
 	Vector2D index2Pos(int id) {return Vector2D(index2col(id), index2row(id));}
 	void clearVolatileTerrain();
 	void clearVolatileTerrain(E_CELL type);
-	void clearDeleteTerrain();
+	void clearDeletedTerrain();/*清除每round都会刷新的地形信息*/
 	void clone(MatrixMap & newMap);
 	
 	int getNearestTerrainDistance(Vector2D &pos, Vector2D &dir, E_CELL type);
 	int getTerrainNumInVision(Vector2D &ops, Vector2D &dir, E_CELL type);
 	int getTerrainNumInVision(Vector2D &ops, E_CELL type);
 	
-	int getTerrainNumINDistance(Vector2D &ops, E_CELL type);
+	int getTerrainNumInDistance(Vector2D &ops, E_CELL type);
 	
 	int getPlayerNumInOneStep(Vector2D &pos);
 	
-	bool isValideCoord(int col, int row)
+	bool isValidCoord(int col, int row)
 	{
 		if (((col >= 0) && (col < _width)) && ((row >= 0) && (row < _height)))
 		{
@@ -97,7 +97,7 @@ class MatrixMap
 		return false;
 		
 	}
-	bool isValideCoord(Vector2D &pos)
+	bool isValidCoord(Vector2D &pos)
 	{
 		if (((pos.col >= 0) && (pos.col <_width)) && ((pos.row >= 0) && (pos.row < _height)))
 		{
@@ -107,7 +107,7 @@ class MatrixMap
 	}
 	Vector2D * getPoint(int col, int row)
 	{
-		if (!isValideCoord(col, row))
+		if (!isValidCoord(col, row))
 		{
 			return NULL;
 			
@@ -118,7 +118,7 @@ class MatrixMap
 	
 	void setTerrain(int col, int row, E_CELL type)
 	{
-		if (isValideCoord(col, row))
+		if (!isValidCoord(col, row))
 		{
 			return ;
 		}
@@ -127,7 +127,7 @@ class MatrixMap
 	
 	int getTerrain(int col, int row)
 	{
-		if (!isValideCoord(col, row))
+		if (!isValidCoord(col, row))
 		{
 			return E_WALL;
 		}
@@ -136,7 +136,7 @@ class MatrixMap
 
 	int getTerrain(Vector2D *point)
 	{
-		if (!isValideCoord(point->col, point->row))
+		if (!isValidCoord(point->col, point->row))
 		{
 			return E_WALL;
 		}
@@ -146,7 +146,7 @@ class MatrixMap
 	
 	int getTerrain(Vector2D &point)
 	{
-		if (!isValideCoord(point.col, point.row))
+		if (!isValidCoord(point.col, point.row))
 		{
 			return E_WALL;
 		}
@@ -155,16 +155,16 @@ class MatrixMap
 	
 	Cell * getCell(Vector2D *point)
 	{
-		if (!isValideCoord(point->col, point->row))
+		if (!isValidCoord(point->col, point->row))
 		{
 			return NULL;
 		}
 		return _cells + coord2index(point->col, point->row);
 
 	}
-	Cell * getCeoll(int col, int row)
+	Cell * getCell(int col, int row)
 	{
-		if (!isValideCoord(col, row))
+		if (!isValidCoord(col, row))
 		{
 			return NULL;
 		}
@@ -182,7 +182,7 @@ class MatrixMap
 	
 	void setBullet(int col, int row, E_BULLET type)
 	{
-		if (! isValideCoord(col, row))
+		if (! isValidCoord(col, row))
 		{
 			return ;
 		}

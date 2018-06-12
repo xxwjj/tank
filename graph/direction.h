@@ -11,8 +11,8 @@ public:
 
 inline  Direction * getNeighbourDirection(int d)
 {
-    static Direction g_neightbourDirection4[] = {Driection(-1, 0),Driection(0, -1),Driection(1, 0),Driection(0,1),};
-    static Direction g_neightbourDirection6[] = {Driection(1, 1),Driection(-1, -1),Driection(0, -2),Driection(1,-1),Driection(1,1),Driection(0,2)};
+    static Direction g_neightbourDirection4[] = {Direction(-1, 0),Direction(0, -1),Direction(1, 0),Direction(0,1),};
+    static Direction g_neightbourDirection6[] = {Direction(1, 1),Direction(-1, -1),Direction(0, -2),Direction(1,-1),Direction(1,1),Direction(0,2)};
     static Direction g_neightbourDirection8[] = {Direction(-1,0), Direction(-1,1), Direction(0,-1), Direction(1,-1),
                                                  Direction(1,0), Direction(1,1), Direction(0,1), Direction(-1,1)};
     if (d == 4)
@@ -27,5 +27,5 @@ inline  Direction * getNeighbourDirection(int d)
     {
         return g_neightbourDirection8;
     }
-    return null;
+    return NULL;
 }

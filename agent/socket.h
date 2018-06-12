@@ -11,7 +11,7 @@ class Socket
 	public:
 	Socket()
 	{
-	}
+	};
 	~Socket();
 	void init(unsigned long server,unsigned short port);
 	void connect();

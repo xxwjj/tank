@@ -36,7 +36,7 @@ bool checkLineDire(Leg &leg,Vector2D &pos,Vector2D &fire,bool & needSuper)
 			return true;
 		}
 		//线上有相同子弹
-		for(BulletVecIt b = mapInfo._foeBullets.begin(); b != mapInfo._foeBullets.end(); b++）
+		for(BulletVecIt b = mapInfo._foeBullets.begin(); b != mapInfo._foeBullets.end(); b++)
 		{
 			if(b->_pos == newPos && b->_direction *(-1) == fire)
 			{
@@ -113,7 +113,7 @@ bool checkDiagDire(Leg &leg,Vector2D &pos,Vector2D &fire)
 				}
 			}
 			
-			for(PlayerVecIt foe = mapInfo._enemy_players.begin()； foe != mapInfo._enemy_players.end(); foe++）
+			for(PlayerVecIt foe = mapInfo._enemy_players.begin();foe != mapInfo._enemy_players.end(); foe++)
 			{
 				if(foe->_pos == newPos)
 				{
@@ -159,11 +159,11 @@ bool checkAcentDire(Leg &leg,Vector2D &pos,Vector2D &fire)
 		{
 			break;
 		}
-		int step = int(i/3 + 0.5);
+		int step = int(i/3.0+ 0.5);
 		for(int d = 0; d < 2;d++)
 		{
 			int j;
-			for(j = 1;j < step;j++)
+			for(j = 1;j <= step;j++)
 			{
 				newPos = bulletPos + verticalDire[d]*j;
 				if(!matrix.isValidCoord(newPos))
@@ -176,7 +176,7 @@ bool checkAcentDire(Leg &leg,Vector2D &pos,Vector2D &fire)
 					break;
 				}
 			}
-			for(BulletVecIt foe = mapInfo._enemy_players.begin(); foe!=mapInfo._enemy_players.end();foe++)
+			for(PlayerVecIt foe = mapInfo._enemy_players.begin(); foe!=mapInfo._enemy_players.end();foe++)
 			{
 				if(foe->_pos == newPos)
 				{
@@ -253,7 +253,7 @@ void filterConflictMoveFire(Leg &leg)
 		}
 		f->MaintainList();
 		
-		for(std::set<Vector2D>::iterator m = f->movList.begin(); m != f->movList.end(); m++)
+		for(std::set<Vector2D>::iterator m = f->moveList.begin(); m != f->moveList.end(); m++)
 		{
 			newPos = *m + f->_pos;
 			if(!matrix.isValidCoord(newPos))

@@ -8,7 +8,7 @@
 
 void InitConfigFile();
 
-template <class T>;
+template <class T>
 
 T GetConfig (const std::string& in_key);
 
@@ -27,15 +27,41 @@ public:
     Config(std::string file, std::string delimiter = "=", std::string comment = "#");
     Config();
     template <class T> T Read(const std::string & in_key) const;
-    template <class T> T REad(const std::string & in_key, const T& in_value) const;
+    template <class T> T Read(const std::string & in_key, const T& in_value) const;
     template <class T> bool ReadInto (T& out_var, const std::string & in_key) const;
     template <class T>
             bool ReadInto(T& out_var, const std::string & in_key, const T& in_value) const;
     bool FileExist(std::string filename);
     void ReadFile(std::string filename, std::string delimiter = "=", std::string comment = "#");
-    bool KeyExists(std::string & in_key) const;
+    bool KeyExists(const std::string & in_key) const;
 
     template <class T> void Add(const std::string & in_key, const T& in_value);
+	void Remove(const std::string &in_key);
+	
+	//check or change config syntax
+	std::string GetDelimiter() const {return m_Delimiter;}
+	std::string GetComment() const {return m_Comment;}
+	std::string SetDelimiter(const std::string &in_s)
+	{
+		std::string old = m_Delimiter;
+		m_Delimiter =in_s;
+		return old;
+	}
+	std::string SetComment(const std::string &in_s)
+	{
+		std::string old = m_Comment;
+		m_Comment = in_s;
+		return old;
+	}
+	
+	//write or read config
+	friend std::ostream &operator <<(std::ostream &os,const Config&cf);
+	friend std::istream &operator>>(std::istream&is,Config &cf);
+	
+protected:
+   template<class T> static std::string T_as_string(const T&t);
+   template<class T> static T string_as_T(const std::string &s);
+
     static  void Trim(std::string & inout_s);
 
 public:
@@ -52,7 +78,7 @@ public:
 
 extern  Config g_config;
 
-template <const T>
+template <class T>
 
 std::string Config::T_as_string(const T&t)
 {
@@ -65,7 +91,7 @@ template <class T>
 T Config::string_as_T(const std::string &s)
 {
     T t;
-    std::istringstrea ist(s);
+    std::istringstream ist(s);
     ist >> t;
     return t;
 }
@@ -78,7 +104,7 @@ inline std::string Config::string_as_T<std::string>(const std::string &s)
 }
 
 template <>
-inline bool Config::string string_as_T<bool > (const std::string &s)
+inline bool Config::string_as_T<bool> (const std::string &s)
 {
 
     bool b = true;
@@ -96,20 +122,21 @@ inline bool Config::string string_as_T<bool > (const std::string &s)
 template <class T>
 T Config::Read(const std::string &in_key) const {
     mapci p = m_Contents.find(key);
-    if(p == m_Comment.end()) throw  Key_not_found(key);
-    return  string_as_T(p->second);
+    if(p == m_Contents.end()) throw  Key_not_found(key);
+    return  string_as_T<T>(p->second);
  }
 
 template <class T>
-T Config::Read(const std::string &in_key, const T &in_value) const {
+T Config::Read(const std::string &key, const T &value) const {
      mapci p = m_Contents.find(key);
-     if(p == m_Comment.end()) throw  Key_not_found(key);
+     if(p == m_Contents.end()) 
+		 return value;
      return  string_as_T<T>(p->second);
 }
 
 
 template <class T>
-bool  Config::ReadInto(T &var, const std::string &in_key) const {
+bool  Config::ReadInto(T &var, const std::string &key) const {
     mapci p = m_Contents.find(key);
     bool found = (p != m_Contents.end());
     if (found) var = string_as_T<T>(p->second);
@@ -117,7 +144,7 @@ bool  Config::ReadInto(T &var, const std::string &in_key) const {
 }
 
 template <class T>
-bool Config::ReadInto(T &var, const std::string &in_key, const T &in_value) const {
+bool Config::ReadInto(T &var, const std::string &key, const T &value) const {
         mapci p = m_Contents.find(key);
         bool found = (p != m_Contents.end());
         if (found)
