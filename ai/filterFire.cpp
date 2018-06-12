@@ -175,7 +175,7 @@ bool checkAcentDire(Leg &leg,Vector2D &pos,Vector2D &fire)
 				{
 					break;
 				}
-			}
+			
 			for(PlayerVecIt foe = mapInfo._enemy_players.begin(); foe!=mapInfo._enemy_players.end();foe++)
 			{
 				if(foe->_pos == newPos)
@@ -194,7 +194,7 @@ void filterUselessFire(Leg &leg)
 	MatrixMap &matrix = leg._matrix_map;
 	int playerId;
 	bool superFire = false;
-	Vector2D dire[DIRECTION_NUM] = {VECTOR_DOWN,VECTOR_RIGHT,VECTOR_LEFT,VECTOR_UP}；
+	Vector2D dire[DIRECTION_NUM] = {VECTOR_DOWN,VECTOR_RIGHT,VECTOR_LEFT,VECTOR_UP};
 	
 	for(PlayerVecIt f = mapInfo._friend_players.begin();f != mapInfo._friend_players.end();f++)
 	{

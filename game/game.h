@@ -235,7 +235,7 @@ public:
     }
 
     bool findOppositeBulletAtPos(Vector2D &pos, Vector2D &dir,E_BULLET type);
-    bool findOppositeBulletAtPos(Vector2D &pos, Vector2D &dir, E_BULLET type, bool isSupperBullet);
+    bool findOppositeBulletAtPos(Vector2D &pos, Vector2D &dir, E_BULLET type, bool isSuperBullet);
     bool findStarAtPos(Vector2D &pos);
 
     bool HaveSuperBullet();
