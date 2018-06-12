@@ -5,7 +5,7 @@
 #include <vector>
 #include <list>
 #include <set>
-//#include <matrix>
+#include <map>
 #define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #include "matrix_map.h"
